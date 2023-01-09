@@ -3,8 +3,7 @@ import torch.nn as nn
 from torchvision import transforms
 from torchvision.datasets import MNIST
 import torch.optim as optim
-from net.AlexNet import AlexNet
-from net.BPNet import BPNet
+from net import AlexNet, BPNet
 import json
 import time
 
