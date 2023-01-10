@@ -3,14 +3,14 @@ import torch.nn as nn
 from torchvision import transforms
 from torchvision.datasets import MNIST
 import torch.optim as optim
-from net import AlexNet, BPNet
+from net import AlexNet, BPNet, LeNet
 import json
 import time
 
 from torch.utils.tensorboard import SummaryWriter
 
-if __name__ == '__main__':
 
+def Train(net, save_path, epoch_num=10):
     writer = SummaryWriter(log_dir="../logs")
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -46,18 +46,13 @@ if __name__ == '__main__':
     with open('class_indices.json', 'w') as json_file:
         json_file.write(json_str)
 
-    # net = AlexNet(num_classes=10, init_weights=True)
-    # save_path = 'pre_train/AlexNet.pth'
-    net = BPNet()
-    save_path = 'pre_train/BPNet.pth'
-
     net.to(device)
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters(), lr=0.0002)
 
     best_acc = 0.0
 
-    for epoch in range(10):
+    for epoch in range(epoch_num):
         ########################################## train ###############################################
         net.train()
         running_loss = 0.0
@@ -99,7 +94,7 @@ if __name__ == '__main__':
                 best_acc = val_accurate
                 torch.save(net.state_dict(), save_path)
 
-            print('[epoch %d] train_loss: %.3f  test_accuracy: %.3f \n' %
+            print('[epoch %d] train_loss: %.8f  test_accuracy: %.8f \n' %
                   (epoch + 1, running_loss / step, val_accurate))
 
             writer.add_scalar('loss', running_loss / step, epoch)
